@@ -54,20 +54,6 @@ func (r *GitRepository) setName() error {
 	return nil
 }
 
-func (r *GitRepository) Init(flags RepositoryFlags) error {
-	err := r.setName()
-	if err != nil {
-		return err
-	}
-
-	err = r.setDirectory(flags.VscSourcesRoot)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (r *GitRepository) setDirectory(vcsRoot string) error {
 	parsed, err := giturls.Parse(r.Config.Url)
 	if err != nil {
@@ -86,6 +72,20 @@ func (r *GitRepository) setDirectory(vcsRoot string) error {
 	elements = append(elements, strings.Split(escapedPath, "/")...)
 
 	r.directory = path.Join(elements...)
+
+	return nil
+}
+
+func (r *GitRepository) Init(flags RepositoryFlags) error {
+	err := r.setName()
+	if err != nil {
+		return err
+	}
+
+	err = r.setDirectory(flags.VscSourcesRoot)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
