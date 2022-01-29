@@ -4,12 +4,8 @@ import (
 	"path"
 )
 
-type DirectoryRepositoryConfig struct {
-	Path string `json:"path"`
-}
-
 type DirectoryRepository struct {
-	Config DirectoryRepositoryConfig
+	Path string `json:"path"`
 }
 
 func (r *DirectoryRepository) Init(_ RepositoryFlags) error {
@@ -25,9 +21,9 @@ func (r *DirectoryRepository) Clone() (string, error) {
 }
 
 func (r *DirectoryRepository) Name() string {
-	return path.Base(r.Config.Path)
+	return path.Base(r.Path)
 }
 
 func (r *DirectoryRepository) Directory() string {
-	return r.Config.Path
+	return r.Path
 }

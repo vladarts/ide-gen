@@ -10,16 +10,16 @@ type Config struct {
 }
 
 type RepositoryConfig struct {
-	Name      *string                               `json:"name"`
-	Git       *repository.GitRepositoryConfig       `json:"git"`
-	Directory *repository.DirectoryRepositoryConfig `json:"directory"`
+	Name      *string                         `json:"name"`
+	Git       *repository.GitRepository       `json:"git"`
+	Directory *repository.DirectoryRepository `json:"directory"`
 }
 
 func (c *RepositoryConfig) NewFromConfig() (repository.Repository, error) {
 	if c.Git != nil {
-		return &repository.GitRepository{Config: *c.Git}, nil
+		return c.Git, nil
 	} else if c.Directory != nil {
-		return &repository.DirectoryRepository{Config: *c.Directory}, nil
+		return c.Directory, nil
 	}
 
 	return nil, fmt.Errorf("can not recognize repository type")

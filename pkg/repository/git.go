@@ -23,21 +23,17 @@ func ExecCmd(name string, args []string, dir *string) (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
-type GitRepositoryConfig struct {
+type GitRepository struct {
 	Url         string             `json:"url"`
 	FastForward *bool              `json:"fastForward"`
 	Remotes     *map[string]string `json:"remotes"`
-}
-
-type GitRepository struct {
-	Config GitRepositoryConfig
 
 	name      string
 	directory string
 }
 
 func (r *GitRepository) setName() error {
-	parsed, err := giturls.Parse(r.Config.Url)
+	parsed, err := giturls.Parse(r.Url)
 	if err != nil {
 		return err
 	}
@@ -55,7 +51,7 @@ func (r *GitRepository) setName() error {
 }
 
 func (r *GitRepository) setDirectory(vcsRoot string) error {
-	parsed, err := giturls.Parse(r.Config.Url)
+	parsed, err := giturls.Parse(r.Url)
 	if err != nil {
 		return err
 	}
@@ -105,7 +101,7 @@ func (r *GitRepository) Clone() (string, error) {
 		}
 
 		_, err = ExecCmd("git", []string{
-			"clone", r.Config.Url, repoPath,
+			"clone", r.Url, repoPath,
 		}, nil)
 		if err != nil {
 			return "", err
@@ -118,14 +114,14 @@ func (r *GitRepository) Clone() (string, error) {
 			return "", err
 		}
 
-		if curOrigin != r.Config.Url {
+		if curOrigin != r.Url {
 			return "", fmt.Errorf(
 				"current origin %s does not match with config value %s",
-				curOrigin, r.Config.Url)
+				curOrigin, r.Url)
 		}
 	}
 
-	if r.Config.FastForward != nil && *r.Config.FastForward {
+	if r.FastForward != nil && *r.FastForward {
 		_, err := ExecCmd("git", []string{
 			"config", "pull.ff", "only",
 		}, &repoPath)
