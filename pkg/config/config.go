@@ -6,7 +6,7 @@ import (
 )
 
 type Config struct {
-	Repositories []RepositoryConfig `json:"repositories"`
+	RepositoryConfigs []RepositoryConfig `json:"repositories"`
 }
 
 type RepositoryConfig struct {

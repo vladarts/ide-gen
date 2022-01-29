@@ -54,13 +54,13 @@ func (r *GitRepository) setName() error {
 	return nil
 }
 
-func (r *GitRepository) Init(vcsRoot string) error {
+func (r *GitRepository) Init(flags RepositoryFlags) error {
 	err := r.setName()
 	if err != nil {
 		return err
 	}
 
-	err = r.setDirectory(vcsRoot)
+	err = r.setDirectory(flags.VscSourcesRoot)
 	if err != nil {
 		return err
 	}

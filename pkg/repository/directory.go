@@ -12,7 +12,7 @@ type DirectoryRepository struct {
 	Config DirectoryRepositoryConfig
 }
 
-func (r *DirectoryRepository) Init(_ string) error {
+func (r *DirectoryRepository) Init(_ RepositoryFlags) error {
 	return nil
 }
 
