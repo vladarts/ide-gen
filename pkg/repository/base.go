@@ -1,8 +1,9 @@
 package repository
 
 type Repository interface {
-	Clone(root string) error
-	Name() (string, error)
-	Directory() (string, error)
+	Init(vcsRoot string) error
+	Clone() (string, error)
+	Name() string
+	Directory() string
 	Vcs() *string
 }

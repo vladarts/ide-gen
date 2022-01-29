@@ -23,69 +23,23 @@ func ExecCmd(name string, args []string, dir *string) (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
-type GitRepository struct {
+type GitRepositoryConfig struct {
 	Url         string             `json:"url"`
 	FastForward *bool              `json:"fastForward"`
 	Remotes     *map[string]string `json:"remotes"`
 }
 
-func (r *GitRepository) Vcs() *string {
-	value := "git"
-	return &value
+type GitRepository struct {
+	Config GitRepositoryConfig
+
+	name      string
+	directory string
 }
 
-func (r *GitRepository) Clone(root string) error {
-	d, err := r.Directory()
+func (r *GitRepository) setName() error {
+	parsed, err := giturls.Parse(r.Config.Url)
 	if err != nil {
 		return err
-	}
-	repoPath := path.Join(root, d)
-
-	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
-		err := os.MkdirAll(repoPath, os.ModePerm)
-		if err != nil {
-			return err
-		}
-
-		_, err = ExecCmd("git", []string{
-			"clone", r.Url, repoPath,
-		}, nil)
-		if err != nil {
-			return err
-		}
-	} else {
-		curOrigin, err := ExecCmd("git", []string{
-			"remote", "get-url", "origin",
-		}, &repoPath)
-		if err != nil {
-			return err
-		}
-
-		if curOrigin != r.Url {
-			return fmt.Errorf(
-				"current origin %s does not match with config value %s",
-				curOrigin, r.Url)
-		}
-	}
-
-	if r.FastForward != nil && *r.FastForward {
-		_, err := ExecCmd("git", []string{
-			"config", "pull.ff", "only",
-		}, &repoPath)
-		if err != nil {
-			return err
-		}
-	}
-
-	//: TODO: add multiple upstreams
-
-	return nil
-}
-
-func (r *GitRepository) Name() (string, error) {
-	parsed, err := giturls.Parse(r.Url)
-	if err != nil {
-		return "", err
 	}
 
 	escapedPath := parsed.EscapedPath()
@@ -95,13 +49,29 @@ func (r *GitRepository) Name() (string, error) {
 
 	elements := strings.Split(escapedPath, "/")
 
-	return strings.Join(elements, "."), nil
+	r.name = strings.Join(elements, ".")
+
+	return nil
 }
 
-func (r *GitRepository) Directory() (string, error) {
-	parsed, err := giturls.Parse(r.Url)
+func (r *GitRepository) Init(vcsRoot string) error {
+	err := r.setName()
 	if err != nil {
-		return "", err
+		return err
+	}
+
+	err = r.setDirectory(vcsRoot)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *GitRepository) setDirectory(vcsRoot string) error {
+	parsed, err := giturls.Parse(r.Config.Url)
+	if err != nil {
+		return err
 	}
 
 	escapedPath := parsed.EscapedPath()
@@ -110,9 +80,69 @@ func (r *GitRepository) Directory() (string, error) {
 	}
 
 	elements := []string{
+		vcsRoot,
 		parsed.Hostname(),
 	}
 	elements = append(elements, strings.Split(escapedPath, "/")...)
 
-	return path.Join(elements...), nil
+	r.directory = path.Join(elements...)
+
+	return nil
+}
+
+func (r *GitRepository) Vcs() *string {
+	value := "git"
+	return &value
+}
+
+func (r *GitRepository) Clone() (string, error) {
+	repoPath := r.Directory()
+
+	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
+		err := os.MkdirAll(repoPath, os.ModePerm)
+		if err != nil {
+			return "", err
+		}
+
+		_, err = ExecCmd("git", []string{
+			"clone", r.Config.Url, repoPath,
+		}, nil)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		curOrigin, err := ExecCmd("git", []string{
+			"remote", "get-url", "origin",
+		}, &repoPath)
+		if err != nil {
+			return "", err
+		}
+
+		if curOrigin != r.Config.Url {
+			return "", fmt.Errorf(
+				"current origin %s does not match with config value %s",
+				curOrigin, r.Config.Url)
+		}
+	}
+
+	if r.Config.FastForward != nil && *r.Config.FastForward {
+		_, err := ExecCmd("git", []string{
+			"config", "pull.ff", "only",
+		}, &repoPath)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	//: TODO: add multiple upstreams
+
+	return repoPath, nil
+}
+
+func (r *GitRepository) Name() string {
+	return r.name
+}
+
+func (r *GitRepository) Directory() string {
+	return r.directory
 }

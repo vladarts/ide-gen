@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/xxxbobrxxx/idea-project-manager/pkg/config"
+	"github.com/xxxbobrxxx/idea-project-manager/pkg/idea"
 )
 
 type GenerateCommand struct {
 	config.GlobalFlags
+	idea.Project
 
 	cmd *cobra.Command
 }
@@ -25,9 +26,10 @@ func NewGenerateCommand() *GenerateCommand {
 	}
 	command.cmd = cmd
 
+	command.Project.AddFlags(cmd.PersistentFlags())
 	command.GlobalFlags.AddFlags(cmd.PersistentFlags())
 	_ = command.cmd.MarkPersistentFlagRequired("config")
-	_ = command.cmd.MarkPersistentFlagRequired("idea-project-root")
+	_ = command.cmd.MarkPersistentFlagRequired("idea-sources-root")
 
 	return command
 }
@@ -37,9 +39,36 @@ func (command *GenerateCommand) Register() *cobra.Command {
 }
 
 func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error) {
-	fmt.Println(command.GlobalFlags.Config)
-	fmt.Println(command.GlobalFlags.IdeaProjectRoot)
-	fmt.Println(command.GlobalFlags.VscSourcesRoot)
+	c, err := command.ReadConfig()
+	if err != nil {
+		return err
+	}
+
+	project := command.Project
+
+	for _, repositoryConfig := range c.Repositories {
+		repository, err := repositoryConfig.NewFromConfig()
+		if err != nil {
+			return err
+		}
+
+		err = repository.Init(command.VscSourcesRoot)
+		if err != nil {
+			return err
+		}
+
+		_, err = repository.Clone()
+		if err != nil {
+			return err
+		}
+
+		project.AddRepository(repository)
+	}
+
+	err = project.Write()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

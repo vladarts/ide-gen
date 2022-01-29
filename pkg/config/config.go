@@ -6,21 +6,21 @@ import (
 )
 
 type Config struct {
-	Repositories []RepositoryItem `json:"repositories"`
+	Repositories []RepositoryConfig `json:"repositories"`
 }
 
-type RepositoryItem struct {
-	Name      *string                         `json:"name"`
-	Git       *repository.GitRepository       `json:"git"`
-	Directory *repository.DirectoryRepository `json:"directory"`
+type RepositoryConfig struct {
+	Name      *string                               `json:"name"`
+	Git       *repository.GitRepositoryConfig       `json:"git"`
+	Directory *repository.DirectoryRepositoryConfig `json:"directory"`
 }
 
-func (item RepositoryItem) Repository() (repository.Repository, error) {
-	if item.Git != nil {
-		return item.Git, nil
-	} else if item.Directory != nil {
-		return item.Directory, nil
+func (c *RepositoryConfig) NewFromConfig() (repository.Repository, error) {
+	if c.Git != nil {
+		return &repository.GitRepository{Config: *c.Git}, nil
+	} else if c.Directory != nil {
+		return &repository.DirectoryRepository{Config: *c.Directory}, nil
 	}
 
-	return nil, fmt.Errorf("can not determine repository type")
+	return nil, fmt.Errorf("can not recognize repository type")
 }

@@ -2,6 +2,7 @@ package idea
 
 import (
 	"bytes"
+	"strings"
 	"text/template"
 )
 
@@ -15,7 +16,7 @@ const (
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$USER_HOME$/{{ .Module.Directory }}" />
+    <content url="file://{{ .Module.Directory }}" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
@@ -27,7 +28,7 @@ const (
   <component name="ProjectModuleManager">
     <modules>
     {{- range $module := .Modules }}
-      <module fileurl="file://$PROJECT_DIR$/{{ $module.ImlPath }}" filepath="$PROJECT_DIR$/{{ $module.ImlPath }}" />
+      <module fileurl="file://{{ $module.ImlPath }}" filepath="{{ $module.ImlPath }}" />
     {{- end }}
     </modules>
   </component>
@@ -50,7 +51,7 @@ const (
   <component name="VcsDirectoryMappings">
   {{- range $module := .Modules }}
   {{- if $module.Vcs }}
-    <mapping directory="$USER_HOME$/{{ $module.Directory }}" vcs="{{ $module.Vcs }}" />
+    <mapping directory="{{ $module.Directory }}" vcs="{{ $module.Vcs }}" />
   {{- end }}
   {{- end }}
   </component>
@@ -70,13 +71,7 @@ func genTemplate(tpl string, ctx interface{}) string {
 		panic(err)
 	}
 
-	return buf.String()
-}
-
-type Module struct {
-	Directory string
-	Vcs       *string
-	ImlPath   string
+	return strings.TrimSpace(buf.String())
 }
 
 type GenModuleContext struct {
