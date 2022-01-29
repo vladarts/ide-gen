@@ -91,7 +91,7 @@ func (r *GitRepository) setDirectory(vcsRoot string) error {
 }
 
 func (r *GitRepository) Vcs() *string {
-	value := "git"
+	value := "Git"
 	return &value
 }
 

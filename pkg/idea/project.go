@@ -12,7 +12,14 @@ const (
 	projectImlSubdir = "iml"
 	ideaSubdir       = ".idea"
 	modulesFileName  = "modules.xml"
+	vcsFileName      = "vcs.xml"
 )
+
+type Module struct {
+	Directory string
+	Vcs       *string
+	ImlPath   string
+}
 
 type Project struct {
 	Root string
@@ -26,19 +33,15 @@ func (p *Project) AddFlags(flags *pflag.FlagSet) {
 }
 
 func (p *Project) ImlDir() string {
-	return path.Join(
-		p.Root,
-		ideaSubdir,
-		projectImlSubdir,
-	)
+	return path.Join(p.Root, ideaSubdir, projectImlSubdir)
 }
 
 func (p *Project) ModulesPath() string {
-	return path.Join(
-		p.Root,
-		ideaSubdir,
-		modulesFileName,
-	)
+	return path.Join(p.Root, ideaSubdir, modulesFileName)
+}
+
+func (p *Project) VcsPath() string {
+	return path.Join(p.Root, ideaSubdir, vcsFileName)
 }
 
 func (p *Project) AddRepository(r repository.Repository) {
@@ -65,6 +68,11 @@ func (p *Project) Write() error {
 	}
 
 	err := os.WriteFile(p.ModulesPath(), []byte(GenModules(p.Modules)), 0644)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(p.VcsPath(), []byte(GenVcs(p.Modules)), 0644)
 	if err != nil {
 		return err
 	}
