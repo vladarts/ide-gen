@@ -32,3 +32,13 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+brews:
+  - name: ide-gen
+
+    tap:
+      owner: xxxbobrxxx
+      name: homebrew-xxxbobrxxx
+      branch: main
+
+    folder: Formula
+    homepage: https://github.com/xxxbobrxxx/ide-gen
