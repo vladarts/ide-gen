@@ -1,7 +1,7 @@
 # Development Workspace Manager
 
 `ide-gen` is a tool to simplify local workspace management by defining a
-strict directories structure for SCM repositories required to be cloned and
+strict directories structure for VCS repositories required to be cloned and
 automatic workspaces generation for supported IDE projects.
 
 ## Quickstart
@@ -11,7 +11,7 @@ Define a sample project configuration in the
 
 ```yaml
 repositories:
-  #: Local non-SCM directory
+  #: Local non-VCS directory
   - directory:
       path: /your/local/dir
 
@@ -21,7 +21,7 @@ repositories:
       fastForward: true
 ```
 
-Execute a command to clone repositories and generate IntelliJ IDEA project:
+Execute a command to clone repositories only:
 
 ```bash
 $ ide-gen gen -c ${HOME}/dev/main.yaml
@@ -46,6 +46,18 @@ It will:
   - Create/Overwrite `.idea/iml/<project_name>.iml` for each repository
   - Create/Overwrite `.idea/modules.xml` containing all repositories
   - Create/Overwrite `.idea/vcs.xml` containing proper VCS mappings
+
+### Repository clone path
+
+Directories paths to clone VCS repositories to are generated automatically
+following the rule
+
+```
+$VCS_ROOT/vcs-hostname/group-1[/group-2][/group-...]/repo-name
+```
+
+By default `$VCS_ROOT` is `${HOME}/dev` and it can be overridden by the
+`-s/--vcs-sources-root` param.
 
 ### IntelliJ IDEA modules structure
 
