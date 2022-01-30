@@ -2,3 +2,5 @@
 bin
 .coverage*
 vendor
+
+dist/
