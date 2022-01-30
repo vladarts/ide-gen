@@ -10,7 +10,6 @@ type Config struct {
 }
 
 type RepositoryConfig struct {
-	Name      *string                          `json:"name"`
 	Git       *repository.GitSourcesRootConfig `json:"git"`
 	Directory *repository.RawSourcesRootConfig `json:"directory"`
 }
@@ -23,6 +22,7 @@ func (c *Config) GetProjectEntries(flags repository.SourcesRootFlags) ([]reposit
 		var (
 			sourcesRootConfig repository.SourcesRootConfig
 			name, directory   string
+			err               error
 		)
 
 		if projectEntryConfig.Git != nil {
@@ -33,7 +33,7 @@ func (c *Config) GetProjectEntries(flags repository.SourcesRootFlags) ([]reposit
 			return nil, fmt.Errorf("can not determine repository type")
 		}
 
-		name, err := sourcesRootConfig.Name()
+		name, err = sourcesRootConfig.Name()
 		if err != nil {
 			return nil, err
 		}

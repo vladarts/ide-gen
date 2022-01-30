@@ -19,5 +19,5 @@ func (f *SourcesRootFlags) AddFlags(flags *pflag.FlagSet) {
 		vscReposRootDefault = path.Join(home, "dev")
 	}
 	flags.StringVarP(&f.VscSourcesRoot, "vcs-sources-root", "s",
-		vscReposRootDefault, "")
+		vscReposRootDefault, "root directory to clone vcs repositories to")
 }

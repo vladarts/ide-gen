@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	appName = "idea-pm"
+	appName = "ide-gen"
 	//: env variables
 
 	//: exit codes

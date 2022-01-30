@@ -21,7 +21,7 @@ func NewGenerateCommand() *GenerateCommand {
 	cmd := &cobra.Command{
 		Use:          "generate",
 		Aliases:      []string{"gen"},
-		Short:        "Generate an IDEA project",
+		Short:        "Clone repositories and generate IDE project",
 		SilenceUsage: true,
 		Args:         cobra.NoArgs,
 		RunE:         command.Execute,
@@ -33,7 +33,6 @@ func NewGenerateCommand() *GenerateCommand {
 	command.SourcesRootFlags.AddFlags(cmd.PersistentFlags())
 
 	_ = command.cmd.MarkPersistentFlagRequired("config")
-	_ = command.cmd.MarkPersistentFlagRequired("idea-sources-root")
 
 	return command
 }
@@ -75,15 +74,17 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 	}
 
 	//: Idea project
-	project := command.Project
-	for _, projectEntry := range projectEntries {
-		project.AddEntry(projectEntry)
-	}
+	if command.Project.Root != "" {
+		project := command.Project
+		for _, projectEntry := range projectEntries {
+			project.AddEntry(projectEntry)
+		}
 
-	logger.Infof("Writing idea project %s", project.Root)
-	err = project.Write()
-	if err != nil {
-		return err
+		logger.Infof("Writing idea project %s", project.Root)
+		err = project.Write()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

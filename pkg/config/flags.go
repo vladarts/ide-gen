@@ -13,7 +13,7 @@ type GlobalFlags struct {
 
 func (f *GlobalFlags) AddFlags(flags *pflag.FlagSet) {
 	flags.StringVarP(&f.Config, "config", "c",
-		"", "")
+		"", "configuration file path")
 }
 
 func (f *GlobalFlags) ReadConfig() (*Config, error) {

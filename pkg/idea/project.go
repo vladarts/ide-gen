@@ -29,7 +29,7 @@ type Project struct {
 
 func (p *Project) AddFlags(flags *pflag.FlagSet) {
 	flags.StringVarP(&p.Root, "idea-project-root", "i",
-		"", "")
+		"", "IntelliJ IDEA project location")
 }
 
 func (p *Project) ImlDir() string {
