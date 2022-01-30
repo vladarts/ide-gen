@@ -61,6 +61,7 @@ func init() {
 
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(NewGenerateCommand().Register())
+	rootCmd.AddCommand(NewJsonSchemaCommandCommand().Register())
 }
 
 func main() {

@@ -6,9 +6,9 @@ import (
 )
 
 type Config struct {
-	GitlabEntries []*gitlab.DiscoveryConfig          `json:"gitlab"`
-	GitEntries    []*repository.GitSourcesRootConfig `json:"git"`
-	RawEntries    []*repository.RawSourcesRootConfig `json:"directory"`
+	GitlabEntries []*gitlab.DiscoveryConfig          `json:"gitlab,omitempty"`
+	GitEntries    []*repository.GitSourcesRootConfig `json:"git,omitempty"`
+	RawEntries    []*repository.RawSourcesRootConfig `json:"directory,omitempty"`
 }
 
 func (c *Config) GetProjectEntries(flags repository.SourcesRootFlags) ([]repository.ProjectEntry, error) {

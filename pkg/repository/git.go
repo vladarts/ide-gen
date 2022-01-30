@@ -95,8 +95,8 @@ func (r *GitSourcesRoot) Exists(path string) (bool, error) {
 
 type GitSourcesRootConfig struct {
 	Url         string             `json:"url"`
-	FastForward *bool              `json:"fastForward"`
-	Remotes     *map[string]string `json:"remotes"`
+	FastForward *bool              `json:"fastForward,omitempty"`
+	Remotes     *map[string]string `json:"remotes,omitempty"`
 }
 
 func (c *GitSourcesRootConfig) Directory(root string) (string, error) {

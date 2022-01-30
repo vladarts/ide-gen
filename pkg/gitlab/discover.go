@@ -9,16 +9,16 @@ import (
 )
 
 type DiscoveryConfig struct {
-	Url         string `json:"url"`
-	Token       string `json:"token"`
-	TokenEnvVar string `json:"tokenEnvVar"`
+	Url         string `json:"url,omitempty"`
+	Token       string `json:"token,omitempty" jsonschema:"oneof_required=token"`
+	TokenEnvVar string `json:"tokenEnvVar,omitempty" jsonschema:"oneof_required=tokenEnvVar"`
 
-	IncludeArchived bool `json:"includeArchived"`
-	HttpsUrl        bool `json:"httpsUrl"`
-	FastForward     bool `json:"fastForward"`
+	IncludeArchived bool `json:"includeArchived,omitempty"`
+	HttpsUrl        bool `json:"httpsUrl,omitempty"`
+	FastForward     bool `json:"fastForward,omitempty"`
 
-	Include *[]string `json:"include"`
-	Exclude *[]string `json:"exclude"`
+	Include *[]string `json:"include,omitempty"`
+	Exclude *[]string `json:"exclude,omitempty"`
 
 	client *gitlab.Client
 }
