@@ -42,3 +42,18 @@ brews:
 
     folder: Formula
     homepage: https://github.com/xxxbobrxxx/ide-gen
+
+    install: |
+      bin.install "ide-gen"
+
+      # Install bash completion
+      output = Utils.safe_popen_read(bin/"ide-gen", "completion", "bash")
+      (bash_completion/"ide-gen").write output
+
+      # Install zsh completion
+      output = Utils.safe_popen_read(bin/"ide-gen", "completion", "zsh")
+      (zsh_completion/"_ide-gen").write output
+
+
+    test: |
+      system "#{bin}/ide-gen version"
