@@ -27,5 +27,5 @@ indent_size = 2
 [*.sh]
 indent_size = 2
 
-[*.rst]
+[{*.rst,*.md}]
 indent_size = 2

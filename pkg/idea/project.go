@@ -3,7 +3,7 @@ package idea
 import (
 	"fmt"
 	"github.com/spf13/pflag"
-	"github.com/xxxbobrxxx/idea-project-manager/pkg/repository"
+	"github.com/xxxbobrxxx/ide-gen/pkg/repository"
 	"os"
 	"path"
 )

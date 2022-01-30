@@ -6,37 +6,89 @@ automatic workspaces generation for supported IDE projects.
 
 ## Quickstart
 
-Define a sample project configuration in the
-`${HOME}/dev/main.yaml` file:
+Define a sample project configuration in the, for example,
+`${HOME}/main.yaml` file:
 
 ```yaml
-repositories:
-  #: Local non-VCS directory
-  - directory:
-      path: /your/local/dir
+#: Local non-VCS directories
+directory:
+  - path: /your/local/dir
 
-  #: Git repository
-  - git:
-      url: git@github.com:xxxbobrxxx/ide-gen.git
-      fastForward: true
+#: Git repositories
+git:
+  -
+    #: Git repository URL, required
+    url: git@github.com:xxxbobrxxx/ide-gen.git
+
+    #: Apply `git config pull.ff only` during clone.
+    #: Optional, default: false
+    #:
+    # fastForward: true
+
+    #: Additional origins to add to repo to.
+    #: Optional, default: {}
+    #:
+    # remotes: {}
+    #   another-origin: git@github.com:xxxbobrxxx/ide-gen-fork.git
+
+#: Gitlab Autodiscovery configs
+gitlab:
+  -
+    #: Gitlab API URL
+    #: Optional, default: https://gitlab.com/api/v4
+    #:
+    # url:
+
+    #: token or tokenEnvVar must be defined to access Gitlab API
+    #:
+    #: Value of Gitlab API token
+    #:
+    # token: XXXXXXXXXXXXX
+
+    #: Name of environment variable containing Gitlab API token
+    #:
+    tokenEnvVar: GITLAB_TOKEN
+
+    #: Use HTTPS Url instead of SSH
+    #: Optional, default - false
+    #:
+    # httpsUrl: false
+
+    #: Apply `git config pull.ff only` during clone.
+    #: Optional, default: false
+    #:
+    # fastForward: true
+
+    #: include/exclude regexp patterns for repositories paths
+    #:
+    #: Example: for repository `https://gitlab.com/group1/group2/repo`
+    #: path is `group1/group2/repo`
+    #:
+    #: Optional, default - []
+    #:
+    include:
+      - ^group-to-include/.*
+    exclude:
+      - ^group-to-include/subgroup-to-exclude/.*
 ```
 
 Execute a command to clone repositories only:
 
 ```bash
-$ ide-gen gen -c ${HOME}/dev/main.yaml
+$ ide-gen gen -c ${HOME}/main.yaml
 ```
 
 It will:
 
 - Keep `/your/local/dir` directory untouched
 - Clone `git@github.com:xxxbobrxxx/ide-gen.git` repository to the
-  `${HOME}/dev/github.com/xxxbobtxxx/ide-gen`. If already cloned - skip.
+  `${HOME}/dev/github.com/xxxbobrxxx/ide-gen`. If already cloned - skip.
+- Autodiscover repositories from Gitlab server and add to Git repo list.
 
 To enable IntelliJ IDEA project generation command with params:
 
 ```bash
-$ ide-gen gen -c ${HOME}/dev/main.yaml -i ${HOME}/dev/idea_projects/main
+$ ide-gen gen -c ${HOME}/main.yaml -i ${HOME}/dev/idea_projects/main
 ```
 
 It will:
