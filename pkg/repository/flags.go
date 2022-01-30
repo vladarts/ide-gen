@@ -6,11 +6,11 @@ import (
 	"path"
 )
 
-type RepositoryFlags struct {
+type SourcesRootFlags struct {
 	VscSourcesRoot string
 }
 
-func (f *RepositoryFlags) AddFlags(flags *pflag.FlagSet) {
+func (f *SourcesRootFlags) AddFlags(flags *pflag.FlagSet) {
 	var vscReposRootDefault string
 	home, err := os.UserHomeDir()
 	if err != nil {

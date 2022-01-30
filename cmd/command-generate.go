@@ -9,7 +9,7 @@ import (
 
 type GenerateCommand struct {
 	config.GlobalFlags
-	repository.RepositoryFlags
+	repository.SourcesRootFlags
 	idea.Project
 
 	cmd *cobra.Command
@@ -30,7 +30,7 @@ func NewGenerateCommand() *GenerateCommand {
 
 	command.Project.AddFlags(cmd.PersistentFlags())
 	command.GlobalFlags.AddFlags(cmd.PersistentFlags())
-	command.RepositoryFlags.AddFlags(cmd.PersistentFlags())
+	command.SourcesRootFlags.AddFlags(cmd.PersistentFlags())
 
 	_ = command.cmd.MarkPersistentFlagRequired("config")
 	_ = command.cmd.MarkPersistentFlagRequired("idea-sources-root")
@@ -48,25 +48,24 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 		return err
 	}
 
+	//: Read entries from config and flags
+	projectEntries, err := c.GetProjectEntries(command.SourcesRootFlags)
+	if err != nil {
+		return err
+	}
+
+	//: Clone repos
+	for _, projectEntry := range projectEntries {
+		err = projectEntry.Commander.Clone(projectEntry.Directory)
+		if err != nil {
+			return err
+		}
+	}
+
+	//: Idea project
 	project := command.Project
-
-	for _, repositoryConfig := range c.RepositoryConfigs {
-		r, err := repositoryConfig.NewFromConfig()
-		if err != nil {
-			return err
-		}
-
-		err = r.Init(command.RepositoryFlags)
-		if err != nil {
-			return err
-		}
-
-		_, err = r.Clone()
-		if err != nil {
-			return err
-		}
-
-		project.AddRepository(r)
+	for _, projectEntry := range projectEntries {
+		project.AddEntry(projectEntry)
 	}
 
 	err = project.Write()

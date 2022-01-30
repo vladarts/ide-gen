@@ -44,17 +44,12 @@ func (p *Project) VcsPath() string {
 	return path.Join(p.Root, ideaSubdir, vcsFileName)
 }
 
-func (p *Project) AddRepository(r repository.Repository) {
-	directory := r.Directory()
-	name := r.Name()
-
-	projectImlPath := path.Join(
-		p.ImlDir(),
-		fmt.Sprintf("%s.iml", name))
+func (p *Project) AddEntry(e repository.ProjectEntry) {
 	module := Module{
-		Directory: directory,
-		Vcs:       r.Vcs(),
-		ImlPath:   projectImlPath,
+		Directory: e.Directory,
+		Vcs:       e.VcsType,
+		ImlPath: path.Join(
+			p.ImlDir(), fmt.Sprintf("%s.iml", e.Name)),
 	}
 	p.Modules = append(p.Modules, module)
 }

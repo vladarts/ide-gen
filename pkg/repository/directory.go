@@ -4,26 +4,28 @@ import (
 	"path"
 )
 
-type DirectoryRepository struct {
+type RawSourcesRootCommander struct{}
+
+func (r *RawSourcesRootCommander) Clone(_ string) error {
+	return nil
+}
+
+type RawSourcesRootConfig struct {
 	Path string `json:"path"`
 }
 
-func (r *DirectoryRepository) Init(_ RepositoryFlags) error {
+func (c *RawSourcesRootConfig) Directory(_ string) (string, error) {
+	return c.Path, nil
+}
+
+func (c *RawSourcesRootConfig) Name() (string, error) {
+	return path.Base(c.Path), nil
+}
+
+func (c *RawSourcesRootConfig) Commander() SourcesRootCommander {
+	return &RawSourcesRootCommander{}
+}
+
+func (c *RawSourcesRootConfig) VcsType() *string {
 	return nil
-}
-
-func (r *DirectoryRepository) Vcs() *string {
-	return nil
-}
-
-func (r *DirectoryRepository) Clone() (string, error) {
-	return r.Directory(), nil
-}
-
-func (r *DirectoryRepository) Name() string {
-	return path.Base(r.Path)
-}
-
-func (r *DirectoryRepository) Directory() string {
-	return r.Path
 }

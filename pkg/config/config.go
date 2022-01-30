@@ -6,21 +6,50 @@ import (
 )
 
 type Config struct {
-	RepositoryConfigs []RepositoryConfig `json:"repositories"`
+	ProjectEntries []RepositoryConfig `json:"repositories"`
 }
 
 type RepositoryConfig struct {
-	Name      *string                         `json:"name"`
-	Git       *repository.GitRepository       `json:"git"`
-	Directory *repository.DirectoryRepository `json:"directory"`
+	Name      *string                          `json:"name"`
+	Git       *repository.GitSourcesRootConfig `json:"git"`
+	Directory *repository.RawSourcesRootConfig `json:"directory"`
 }
 
-func (c *RepositoryConfig) NewFromConfig() (repository.Repository, error) {
-	if c.Git != nil {
-		return c.Git, nil
-	} else if c.Directory != nil {
-		return c.Directory, nil
+func (c *Config) GetProjectEntries(flags repository.SourcesRootFlags) ([]repository.ProjectEntry, error) {
+	var projectEntries []repository.ProjectEntry
+
+	//: Read projects from config
+	for _, projectEntryConfig := range c.ProjectEntries {
+		var (
+			sourcesRootConfig repository.SourcesRootConfig
+			name, directory   string
+		)
+
+		if projectEntryConfig.Git != nil {
+			sourcesRootConfig = projectEntryConfig.Git
+		} else if projectEntryConfig.Directory != nil {
+			sourcesRootConfig = projectEntryConfig.Directory
+		} else {
+			return nil, fmt.Errorf("can not determine repository type")
+		}
+
+		name, err := sourcesRootConfig.Name()
+		if err != nil {
+			return nil, err
+		}
+
+		directory, err = sourcesRootConfig.Directory(flags.VscSourcesRoot)
+		if err != nil {
+			return nil, err
+		}
+
+		projectEntries = append(projectEntries, repository.ProjectEntry{
+			Name:      name,
+			Directory: directory,
+			VcsType:   sourcesRootConfig.VcsType(),
+			Commander: sourcesRootConfig.Commander(),
+		})
 	}
 
-	return nil, fmt.Errorf("can not recognize repository type")
+	return projectEntries, nil
 }

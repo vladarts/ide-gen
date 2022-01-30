@@ -38,16 +38,6 @@ const (
 	tplVcs = `
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="IssueNavigationConfiguration">
-    <option name="links">
-      <list>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="[A-Z]+\-\d+" />
-          <option name="linkRegexp" value="https://jira.iponweb.net/browse/$0" />
-        </IssueNavigationLink>
-      </list>
-    </option>
-  </component>
   <component name="VcsDirectoryMappings">
   {{- range $module := .Modules }}
   {{- if $module.Vcs }}
