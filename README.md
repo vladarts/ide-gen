@@ -1,8 +1,8 @@
 # Development Workspace Manager
 
 `ide-gen` is a tool to simplify local workspace management by defining a
-strict directories structure for VCS repositories required to be cloned and
-automatic workspaces generation for supported IDE projects.
+strict directories structure for VCS repositories and automatic workspaces
+generation for supported IDEs.
 
 ## Installation
 
