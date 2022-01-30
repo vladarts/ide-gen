@@ -7,6 +7,7 @@ require (
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/pflag v1.0.5
 	github.com/whilp/git-urls v1.0.0
+	github.com/xanzy/go-gitlab v0.54.3
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -16,7 +17,6 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.6.8 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/xanzy/go-gitlab v0.54.3 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
 	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
