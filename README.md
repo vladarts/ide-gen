@@ -1,8 +1,7 @@
 # Development Workspace Manager
 
-`ide-gen` is a tool to simplify local workspace management by defining a
-strict directories structure for VCS repositories and automatic workspaces
-generation for supported IDEs.
+`ide-gen` is a tool for development workspace prepare automation by automatic
+VCS repositories discovery and clone and project generation for supported IDEs.
 
 ## Installation
 
@@ -84,7 +83,7 @@ gitlab:
       - ^group-to-include/subgroup-to-exclude/.*
 ```
 
-Execute a command to clone repositories only:
+Execute a command to discover and clone repositories:
 
 ```bash
 $ ide-gen gen -c ${HOME}/main.yaml
@@ -93,11 +92,12 @@ $ ide-gen gen -c ${HOME}/main.yaml
 It will:
 
 - Keep `/your/local/dir` directory untouched
+- Autodiscover repositories from a Gitlab server and add to `git` repo list.
 - Clone `git@github.com:xxxbobrxxx/ide-gen.git` repository to the
   `${HOME}/dev/github.com/xxxbobrxxx/ide-gen`. If already cloned - skip.
-- Autodiscover repositories from Gitlab server and add to Git repo list.
 
-To enable IntelliJ IDEA project generation command with params:
+To enable IntelliJ IDEA project generation run the command with the
+`-i/--idea-project-root` param:
 
 ```bash
 $ ide-gen gen -c ${HOME}/main.yaml -i ${HOME}/dev/idea_projects/main
@@ -105,9 +105,10 @@ $ ide-gen gen -c ${HOME}/main.yaml -i ${HOME}/dev/idea_projects/main
 
 It will:
 
-- Create a `${HOME}/dev/idea_projects/main` directory if it does not exist
+- Create a `${HOME}/dev/idea_projects/main` directory if it does not exist.
+  It will be a root of the IntelliJ IDEA project.
 - Inside the IDEA project dir:
-  - Create **only** `.idea/iml/<project_name>.iml` for each repository.
+  - Just create `.idea/iml/<project_name>.iml` for each repository/directory.
     Overwrite is forbidden to avoid manual settings loss.
   - Create/Overwrite `.idea/modules.xml` containing all repositories
   - Create/Overwrite `.idea/vcs.xml` containing proper VCS mappings
@@ -126,8 +127,12 @@ By default `$VCS_ROOT` is `${HOME}/dev` and it can be overridden by the
 
 ### IntelliJ IDEA modules structure
 
-Program automatically parses VCS URLs to define modules names.
+Intellij IDEA supports adding of several modules to the one project.
+The idea of the tools is to keep modules structure as they are present in
+the VCS. In comparison to Github, Gitlab supports deeper subgroup level so
+that modules structure may be useful.
 
+To achieve it the tool automatically parses VCS URLs to define modules names.
 Example:
 
 - `git@github.com:xxxbobrxxx/ide-gen.git` -> `xxxbobrxxx.ide-gen`
@@ -145,7 +150,7 @@ Example: for the following repos list:
 - `git@github.com:group2/repo1.git`
 - `git@github.com:group2/repo2.git`
 
-The following modules tree will be generated:
+The following modules' tree will be generated:
 
 ```
 ├── group1
