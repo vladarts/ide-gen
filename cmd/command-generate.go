@@ -56,11 +56,21 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 
 	//: Clone repos
 	for _, projectEntry := range projectEntries {
-		logger.Infof(
-			"Clone project %s to '%s'", projectEntry.Name, projectEntry.Directory)
-		err = projectEntry.Commander.Clone(projectEntry.Directory)
+		exists, err := projectEntry.Commander.Exists(projectEntry.Directory)
 		if err != nil {
 			return err
+		}
+
+		if exists {
+			logger.Infof(
+				"Skip clone project '%s' to '%s'", projectEntry.Name, projectEntry.Directory)
+		} else {
+			logger.Infof(
+				"Clone project '%s' to '%s'", projectEntry.Name, projectEntry.Directory)
+			err = projectEntry.Commander.Clone(projectEntry.Directory)
+			if err != nil {
+				return err
+			}
 		}
 	}
 

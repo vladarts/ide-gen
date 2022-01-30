@@ -6,6 +6,7 @@ const (
 
 type SourcesRootCommander interface {
 	Clone(string) error
+	Exists(string) (bool, error)
 }
 
 type SourcesRootConfig interface {

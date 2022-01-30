@@ -1,13 +1,22 @@
 package repository
 
 import (
+	"fmt"
+	"os"
 	"path"
 )
 
 type RawSourcesRootCommander struct{}
 
 func (r *RawSourcesRootCommander) Clone(_ string) error {
-	return nil
+	return fmt.Errorf("directory resource root can not be cloned")
+}
+
+func (r *RawSourcesRootCommander) Exists(path string) (bool, error) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false, nil
+	}
+	return true, nil
 }
 
 type RawSourcesRootConfig struct {

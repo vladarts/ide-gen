@@ -30,15 +30,15 @@ type GitSourcesRoot struct {
 	directory string
 }
 
-func (r *GitSourcesRoot) Clone(repoPath string) error {
-	if _, err := os.Stat(repoPath); os.IsNotExist(err) {
-		err := os.MkdirAll(repoPath, os.ModePerm)
+func (r *GitSourcesRoot) Clone(path string) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		err := os.MkdirAll(path, os.ModePerm)
 		if err != nil {
 			return err
 		}
 
 		_, err = ExecCmd("git", []string{
-			"clone", r.Config.Url, repoPath,
+			"clone", r.Config.Url, path,
 		}, nil)
 		if err != nil {
 			return err
@@ -46,7 +46,7 @@ func (r *GitSourcesRoot) Clone(repoPath string) error {
 	} else {
 		curOrigin, err := ExecCmd("git", []string{
 			"remote", "get-url", "origin",
-		}, &repoPath)
+		}, &path)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ func (r *GitSourcesRoot) Clone(repoPath string) error {
 	if r.Config.FastForward != nil && *r.Config.FastForward {
 		_, err := ExecCmd("git", []string{
 			"config", "pull.ff", "only",
-		}, &repoPath)
+		}, &path)
 		if err != nil {
 			return err
 		}
@@ -70,6 +70,27 @@ func (r *GitSourcesRoot) Clone(repoPath string) error {
 	//: TODO: add multiple remotes
 
 	return nil
+}
+
+func (r *GitSourcesRoot) Exists(path string) (bool, error) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false, nil
+	}
+
+	curOrigin, err := ExecCmd("git", []string{
+		"remote", "get-url", "origin",
+	}, &path)
+	if err != nil {
+		return true, err
+	}
+
+	if curOrigin != r.Config.Url {
+		return true, fmt.Errorf(
+			"current origin %s does not match with config value %s",
+			curOrigin, r.Config.Url)
+	}
+
+	return true, nil
 }
 
 type GitSourcesRootConfig struct {
