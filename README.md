@@ -15,6 +15,11 @@ $ brew install ide-gen
 You can also download the binary from the
 [Releases](https://github.com/xxxbobrxxx/ide-gen/releases) page.
 
+### Json Schema
+
+Use [json schema](resources/config.schema.json) for autocompletion in your
+favorite IDE.
+
 ## Quickstart
 
 Define a sample project configuration in the, for example,
