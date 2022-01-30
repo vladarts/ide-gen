@@ -17,8 +17,8 @@ You can also download the binary from the
 
 ### Json Schema
 
-Use [json schema](resources/config.schema.json) for autocompletion in your
-favorite IDE.
+Use [json schema](resources/config.schema.json) for autocompletion during
+config definition in your favorite IDE.
 
 ## Quickstart
 
