@@ -4,6 +4,18 @@
 strict directories structure for VCS repositories required to be cloned and
 automatic workspaces generation for supported IDE projects.
 
+## Installation
+
+For macOS users:
+
+```
+$ brew tap xxxbobrxxx/xxxbobrxxx
+$ brew install ide-gen
+```
+
+You can also download the binary from the
+[Releases](https://github.com/xxxbobrxxx/ide-gen/releases) page.
+
 ## Quickstart
 
 Define a sample project configuration in the, for example,
