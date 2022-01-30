@@ -83,6 +83,7 @@ It will:
 - Keep `/your/local/dir` directory untouched
 - Clone `git@github.com:xxxbobrxxx/ide-gen.git` repository to the
   `${HOME}/dev/github.com/xxxbobrxxx/ide-gen`. If already cloned - skip.
+- Autodiscover repositories from Gitlab server and add to Git repo list.
 
 To enable IntelliJ IDEA project generation command with params:
 
