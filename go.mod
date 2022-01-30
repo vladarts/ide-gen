@@ -11,5 +11,7 @@ require (
 
 require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

@@ -56,6 +56,8 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 
 	//: Clone repos
 	for _, projectEntry := range projectEntries {
+		logger.Infof(
+			"Clone project %s to '%s'", projectEntry.Name, projectEntry.Directory)
 		err = projectEntry.Commander.Clone(projectEntry.Directory)
 		if err != nil {
 			return err
@@ -68,6 +70,7 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 		project.AddEntry(projectEntry)
 	}
 
+	logger.Infof("Writing idea project %s", project.Root)
 	err = project.Write()
 	if err != nil {
 		return err

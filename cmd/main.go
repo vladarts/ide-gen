@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"os"
 	"runtime"
 
@@ -18,6 +19,8 @@ const (
 )
 
 var (
+	logger = logrus.New()
+
 	appVersion = "dev"
 
 	// Exit function
@@ -45,15 +48,17 @@ var (
 func exit(err error) {
 	if err == nil {
 		Exit(exitOk)
-		// this return makes sense only for testing, due to
-		// there's no real system exit from this function, thus far
-		// running in tests it will continue to follow the code sequence.
 		return
 	}
 	Exit(exitCommandError)
 }
 
 func init() {
+	logger.SetLevel(logrus.InfoLevel)
+	logger.SetFormatter(&logrus.TextFormatter{
+		DisableTimestamp: true,
+	})
+
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(NewGenerateCommand().Register())
 }
