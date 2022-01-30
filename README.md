@@ -14,7 +14,7 @@ Define a sample project configuration in the, for example,
 directory:
   - path: /your/local/dir
 
-#: Git repository
+#: Git repositories
 git:
   -
     #: Git repository URL, required
@@ -22,10 +22,12 @@ git:
 
     #: Apply `git config pull.ff only` during clone.
     #: Optional, default: false
+    #:
     # fastForward: true
 
     #: Additional origins to add to repo to.
     #: Optional, default: {}
+    #:
     # remotes: {}
     #   another-origin: git@github.com:xxxbobrxxx/ide-gen-fork.git
 
@@ -34,26 +36,36 @@ gitlab:
   -
     #: Gitlab API URL
     #: Optional, default: https://gitlab.com/api/v4
+    #:
     # url:
 
     #: token or tokenEnvVar must be defined to access Gitlab API
+    #:
+    #: Value of Gitlab API token
+    #:
     # token: XXXXXXXXXXXXX
+
+    #: Name of environment variable containing Gitlab API token
+    #:
     tokenEnvVar: GITLAB_TOKEN
 
     #: Use HTTPS Url instead of SSH
     #: Optional, default - false
+    #:
     # httpsUrl: false
 
     #: Apply `git config pull.ff only` during clone.
     #: Optional, default: false
+    #:
     # fastForward: true
 
-    #: include/exclude patterns for repositories paths
+    #: include/exclude regexp patterns for repositories paths
     #:
     #: Example: for repository `https://gitlab.com/group1/group2/repo`
     #: path is `group1/group2/repo`
     #:
     #: Optional, default - []
+    #:
     include:
       - ^group-to-include/.*
     exclude:
