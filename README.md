@@ -43,7 +43,8 @@ It will:
 
 - Create a `${HOME}/dev/idea_projects/main` directory if it does not exist
 - Inside the IDEA project dir:
-  - Create/Overwrite `.idea/iml/<project_name>.iml` for each repository
+  - Create **only** `.idea/iml/<project_name>.iml` for each repository.
+    Overwrite is forbidden to avoid manual settings loss.
   - Create/Overwrite `.idea/modules.xml` containing all repositories
   - Create/Overwrite `.idea/vcs.xml` containing proper VCS mappings
 
