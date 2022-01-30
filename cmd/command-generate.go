@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/xxxbobrxxx/idea-project-manager/pkg/config"
-	"github.com/xxxbobrxxx/idea-project-manager/pkg/idea"
-	"github.com/xxxbobrxxx/idea-project-manager/pkg/repository"
+	"github.com/xxxbobrxxx/ide-gen/pkg/config"
+	"github.com/xxxbobrxxx/ide-gen/pkg/idea"
+	"github.com/xxxbobrxxx/ide-gen/pkg/repository"
 )
 
 type GenerateCommand struct {

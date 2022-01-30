@@ -1,44 +1,56 @@
 package config
 
 import (
-	"fmt"
-	"github.com/xxxbobrxxx/idea-project-manager/pkg/repository"
+	"github.com/xxxbobrxxx/ide-gen/pkg/gitlab"
+	"github.com/xxxbobrxxx/ide-gen/pkg/repository"
 )
 
 type Config struct {
-	ProjectEntries []RepositoryConfig `json:"repositories"`
-}
-
-type RepositoryConfig struct {
-	Git       *repository.GitSourcesRootConfig `json:"git"`
-	Directory *repository.RawSourcesRootConfig `json:"directory"`
+	GitlabEntries []*gitlab.DiscoveryConfig          `json:"gitlab"`
+	GitEntries    []*repository.GitSourcesRootConfig `json:"git"`
+	RawEntries    []*repository.RawSourcesRootConfig `json:"directory"`
 }
 
 func (c *Config) GetProjectEntries(flags repository.SourcesRootFlags) ([]repository.ProjectEntry, error) {
 	var projectEntries []repository.ProjectEntry
 
-	//: Read projects from config
-	for _, projectEntryConfig := range c.ProjectEntries {
-		var (
-			sourcesRootConfig repository.SourcesRootConfig
-			name, directory   string
-			err               error
-		)
+	var sourceRootConfigs []repository.SourcesRootConfig
 
-		if projectEntryConfig.Git != nil {
-			sourcesRootConfig = projectEntryConfig.Git
-		} else if projectEntryConfig.Directory != nil {
-			sourcesRootConfig = projectEntryConfig.Directory
-		} else {
-			return nil, fmt.Errorf("can not determine repository type")
-		}
+	for _, entryConfig := range c.GitEntries {
+		sourceRootConfigs = append(sourceRootConfigs, entryConfig)
+	}
+	for _, entryConfig := range c.RawEntries {
+		sourceRootConfigs = append(sourceRootConfigs, entryConfig)
+	}
 
-		name, err = sourcesRootConfig.Name()
+	for _, gl := range c.GitlabEntries {
+		err := gl.Init()
 		if err != nil {
 			return nil, err
 		}
 
-		directory, err = sourcesRootConfig.Directory(flags.VscSourcesRoot)
+		projects, err := gl.Discover()
+		if err != nil {
+			return nil, err
+		}
+		for _, entryConfig := range projects {
+			sourceRootConfigs = append(sourceRootConfigs, entryConfig)
+		}
+	}
+
+	//: Read projects from config
+	for _, entryConfig := range sourceRootConfigs {
+		var (
+			name, directory string
+			err             error
+		)
+
+		name, err = entryConfig.Name()
+		if err != nil {
+			return nil, err
+		}
+
+		directory, err = entryConfig.Directory(flags.VscSourcesRoot)
 		if err != nil {
 			return nil, err
 		}
@@ -46,8 +58,8 @@ func (c *Config) GetProjectEntries(flags repository.SourcesRootFlags) ([]reposit
 		projectEntries = append(projectEntries, repository.ProjectEntry{
 			Name:      name,
 			Directory: directory,
-			VcsType:   sourcesRootConfig.VcsType(),
-			Commander: sourcesRootConfig.Commander(),
+			VcsType:   entryConfig.VcsType(),
+			Commander: entryConfig.Commander(),
 		})
 	}
 

@@ -6,37 +6,46 @@ automatic workspaces generation for supported IDE projects.
 
 ## Quickstart
 
-Define a sample project configuration in the
-`${HOME}/dev/main.yaml` file:
+Define a sample project configuration in the, for example,
+`${HOME}/main.yaml` file:
 
 ```yaml
-repositories:
-  #: Local non-VCS directory
-  - directory:
-      path: /your/local/dir
+#: Local non-VCS directories
+directory:
+  - path: /your/local/dir
 
-  #: Git repository
-  - git:
-      url: git@github.com:xxxbobrxxx/ide-gen.git
-      fastForward: true
+#: Git repository
+git:
+  - url: git@github.com:xxxbobrxxx/ide-gen.git
+    fastForward: true
+
+#: Gitlab Autodiscovery configs
+gitlab:
+  - token: XXXXXXXXXXXXX
+    httpsUrl: false
+    fastForward: true
+    include:
+      - ^group-to-include/.*
+    exclude:
+      - ^group-to-include/subgroup-to-exclude/.*
 ```
 
 Execute a command to clone repositories only:
 
 ```bash
-$ ide-gen gen -c ${HOME}/dev/main.yaml
+$ ide-gen gen -c ${HOME}/main.yaml
 ```
 
 It will:
 
 - Keep `/your/local/dir` directory untouched
 - Clone `git@github.com:xxxbobrxxx/ide-gen.git` repository to the
-  `${HOME}/dev/github.com/xxxbobtxxx/ide-gen`. If already cloned - skip.
+  `${HOME}/dev/github.com/xxxbobrxxx/ide-gen`. If already cloned - skip.
 
 To enable IntelliJ IDEA project generation command with params:
 
 ```bash
-$ ide-gen gen -c ${HOME}/dev/main.yaml -i ${HOME}/dev/idea_projects/main
+$ ide-gen gen -c ${HOME}/main.yaml -i ${HOME}/dev/idea_projects/main
 ```
 
 It will:
