@@ -21,6 +21,7 @@ func NewJsonSchemaCommandCommand() *JsonSchemaCommand {
 		SilenceUsage: true,
 		Args:         cobra.NoArgs,
 		RunE:         command.Execute,
+		Hidden:       true,
 	}
 	command.cmd = cmd
 
