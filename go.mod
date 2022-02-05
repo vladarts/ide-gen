@@ -3,6 +3,7 @@ module github.com/xxxbobrxxx/ide-gen
 go 1.17
 
 require (
+	github.com/alecthomas/jsonschema v0.0.0-20211228220459-151e3c21f49d
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/pflag v1.0.5
@@ -12,7 +13,6 @@ require (
 )
 
 require (
-	github.com/alecthomas/jsonschema v0.0.0-20211228220459-151e3c21f49d // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
