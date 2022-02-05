@@ -63,6 +63,7 @@ func init() {
 	rootCmd.AddCommand(NewGenerateCommand().Register())
 	rootCmd.AddCommand(NewJsonSchemaCommandCommand().Register())
 	rootCmd.AddCommand(NewGitCloneCommand().Register())
+	rootCmd.AddCommand(NewGopathLinkCommand().Register())
 }
 
 func main() {

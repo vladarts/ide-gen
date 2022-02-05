@@ -14,6 +14,7 @@ Available Commands:
   completion  Generate the autocompletion script for the specified shell
   generate    Clone repositories and generate IDE project
   git-clone   Clone a single git repository following the application rules
+  gopath-link Create a symlink under the ${GOPATH}/src directory for a golang module if a valid go.mod file and the GOPATH environment variable are defined
   help        Help about any command
   version
 

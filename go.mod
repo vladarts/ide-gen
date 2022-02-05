@@ -3,16 +3,17 @@ module github.com/xxxbobrxxx/ide-gen
 go 1.17
 
 require (
+	github.com/alecthomas/jsonschema v0.0.0-20211228220459-151e3c21f49d
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/pflag v1.0.5
 	github.com/whilp/git-urls v1.0.0
 	github.com/xanzy/go-gitlab v0.54.3
+	golang.org/x/mod v0.5.1
 	sigs.k8s.io/yaml v1.3.0
 )
 
 require (
-	github.com/alecthomas/jsonschema v0.0.0-20211228220459-151e3c21f49d // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
@@ -23,6 +24,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
 	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
