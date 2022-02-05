@@ -23,14 +23,11 @@ func ExecCmd(name string, args []string, dir *string) (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
-type GitSourcesRoot struct {
+type GitSourcesRootCommander struct {
 	Config GitSourcesRootConfig
-
-	name      string
-	directory string
 }
 
-func (r *GitSourcesRoot) Clone(path string) error {
+func (r *GitSourcesRootCommander) Clone(path string) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		err := os.MkdirAll(path, os.ModePerm)
 		if err != nil {
@@ -72,7 +69,7 @@ func (r *GitSourcesRoot) Clone(path string) error {
 	return nil
 }
 
-func (r *GitSourcesRoot) Exists(path string) (bool, error) {
+func (r *GitSourcesRootCommander) Exists(path string) (bool, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false, nil
 	}
@@ -136,7 +133,7 @@ func (c *GitSourcesRootConfig) Name() (string, error) {
 }
 
 func (c *GitSourcesRootConfig) Commander() SourcesRootCommander {
-	return &GitSourcesRoot{Config: *c}
+	return &GitSourcesRootCommander{Config: *c}
 }
 
 func (c *GitSourcesRootConfig) VcsType() *string {

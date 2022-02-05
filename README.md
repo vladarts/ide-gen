@@ -3,6 +3,26 @@
 `ide-gen` is a tool for development workspace prepare automation by automatic
 VCS repositories discovery and clone and project generation for supported IDEs.
 
+```
+$ ide-gen --help
+Automatic VCS repositories clone and IDE setup
+
+Usage:
+  ide-gen [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  generate    Clone repositories and generate IDE project
+  git-clone   Clone a single git repository following the application rules
+  help        Help about any command
+  version
+
+Flags:
+  -h, --help   help for ide-gen
+
+Use "ide-gen [command] --help" for more information about a command.
+```
+
 ## Installation
 
 For macOS users:

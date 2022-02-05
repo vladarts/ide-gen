@@ -30,7 +30,7 @@ var (
 
 	rootCmd = &cobra.Command{
 		Use:   appName,
-		Short: "IntelliJ IDEA and other familiar IDE's project manager",
+		Short: "Automatic VCS repositories clone and IDE setup",
 	}
 	versionCmd = &cobra.Command{
 		Use:     "version",
@@ -62,6 +62,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(NewGenerateCommand().Register())
 	rootCmd.AddCommand(NewJsonSchemaCommandCommand().Register())
+	rootCmd.AddCommand(NewGitCloneCommand().Register())
 }
 
 func main() {
