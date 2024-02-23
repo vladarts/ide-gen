@@ -28,31 +28,16 @@ type GitSourcesRootCommander struct {
 }
 
 func (r *GitSourcesRootCommander) Clone(path string) error {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		err := os.MkdirAll(path, os.ModePerm)
-		if err != nil {
-			return err
-		}
+	err := os.MkdirAll(path, os.ModePerm)
+	if err != nil {
+		return err
+	}
 
-		_, err = ExecCmd("git", []string{
-			"clone", r.Config.Url, path,
-		}, nil)
-		if err != nil {
-			return err
-		}
-	} else {
-		curOrigin, err := ExecCmd("git", []string{
-			"remote", "get-url", "origin",
-		}, &path)
-		if err != nil {
-			return err
-		}
-
-		if curOrigin != r.Config.Url {
-			return fmt.Errorf(
-				"current origin %s does not match with config value %s",
-				curOrigin, r.Config.Url)
-		}
+	_, err = ExecCmd("git", []string{
+		"clone", r.Config.Url, path,
+	}, nil)
+	if err != nil {
+		return err
 	}
 
 	if r.Config.FastForward != nil && *r.Config.FastForward {
@@ -69,14 +54,19 @@ func (r *GitSourcesRootCommander) Clone(path string) error {
 	return nil
 }
 
-func (r *GitSourcesRootCommander) Exists(path string) (bool, error) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
+func (r *GitSourcesRootCommander) Exists(p string) (bool, error) {
+	if _, err := os.Stat(p); os.IsNotExist(err) {
+		return false, nil
+	}
+
+	//: Check if path is a git repository
+	if _, err := os.Stat(path.Join(p, ".git")); os.IsNotExist(err) {
 		return false, nil
 	}
 
 	curOrigin, err := ExecCmd("git", []string{
 		"remote", "get-url", "origin",
-	}, &path)
+	}, &p)
 	if err != nil {
 		return true, err
 	}
