@@ -12,6 +12,7 @@ type DiscoveryConfig struct {
 	Url         string `json:"url,omitempty"`
 	Token       string `json:"token,omitempty" jsonschema:"oneof_required=token"`
 	TokenEnvVar string `json:"tokenEnvVar,omitempty" jsonschema:"oneof_required=tokenEnvVar"`
+	TokenType   string `json:"tokenType,omitempty" jsonschema:"enum=private,enum=job,enum=oauth"`
 
 	IncludeArchived bool `json:"includeArchived,omitempty"`
 	HttpsUrl        bool `json:"httpsUrl,omitempty"`
@@ -122,7 +123,7 @@ func (d DiscoveryConfig) ListProjects() ([]gitlab.Project, error) {
 	return projects, nil
 }
 
-func (d *DiscoveryConfig) Init() error {
+func (d *DiscoveryConfig) Init() (err error) {
 	var opts []gitlab.ClientOptionFunc
 	if d.Url != "" {
 		opts = append(opts, gitlab.WithBaseURL(d.Url))
@@ -135,7 +136,17 @@ func (d *DiscoveryConfig) Init() error {
 		token = d.Token
 	}
 
-	client, err := gitlab.NewClient(token, opts...)
+	var client *gitlab.Client
+	switch d.TokenType {
+	case "", "private":
+		client, err = gitlab.NewClient(token, opts...)
+	case "job":
+		client, err = gitlab.NewJobClient(token, opts...)
+	case "oauth":
+		client, err = gitlab.NewOAuthClient(token, opts...)
+	default:
+		err = fmt.Errorf("incorrect token type: %v", d.TokenType)
+	}
 	if err != nil {
 		return fmt.Errorf("failed to create client: %v", err)
 	}
