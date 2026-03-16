@@ -2,10 +2,12 @@ package gitlab
 
 import (
 	"fmt"
-	"github.com/xanzy/go-gitlab"
-	"github.com/xxxbobrxxx/ide-gen/pkg/repository"
 	"os"
 	"regexp"
+
+	"github.com/xxxbobrxxx/ide-gen/pkg/repository"
+	gitlab "gitlab.com/gitlab-org/api/client-go"
+	"golang.org/x/oauth2"
 )
 
 type DiscoveryConfig struct {
@@ -143,7 +145,8 @@ func (d *DiscoveryConfig) Init() (err error) {
 	case "job":
 		client, err = gitlab.NewJobClient(token, opts...)
 	case "oauth":
-		client, err = gitlab.NewOAuthClient(token, opts...)
+		ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+		client, err = gitlab.NewAuthSourceClient(gitlab.OAuthTokenSource{TokenSource: ts}, opts...)
 	default:
 		err = fmt.Errorf("incorrect token type: %v", d.TokenType)
 	}
