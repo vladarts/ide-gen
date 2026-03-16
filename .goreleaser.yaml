@@ -3,10 +3,10 @@
 
 # The lines below are called `modelines`. See `:help modeline`
 # Feel free to remove those if you don't want/need to use them.
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-v2.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
 
-version: 1
+version: 2
 
 before:
   hooks:
@@ -26,7 +26,8 @@ builds:
     main: ./cmd/
 
 archives:
-  - format: tar.gz
+  - formats:
+      - tar.gz
     # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
@@ -38,12 +39,13 @@ archives:
     # use zip for windows archives
     format_overrides:
       - goos: windows
-        format: zip
+        formats:
+          - zip
 
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
@@ -53,12 +55,12 @@ changelog:
 brews:
   - name: ide-gen
 
-    tap:
+    repository:
       owner: xxxbobrxxx
       name: homebrew-xxxbobrxxx
       branch: main
 
-    folder: Formula
+    directory: Formula
     homepage: https://github.com/vladarts/ide-gen
 
     install: |

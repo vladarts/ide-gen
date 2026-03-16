@@ -3,7 +3,13 @@
     "allow": [
       "Bash(go get:*)",
       "Bash(go build:*)",
-      "Bash(go mod:*)"
+      "Bash(go mod:*)",
+      "Bash(go env:*)",
+      "Bash(grep:*)",
+      "WebSearch",
+      "WebFetch(domain:goreleaser.com)",
+      "WebFetch(domain:carlosbecker.com)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
