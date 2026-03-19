@@ -12,6 +12,7 @@ require (
 	github.com/whilp/git-urls v1.0.0
 	gitlab.com/gitlab-org/api/client-go v1.46.0
 	golang.org/x/mod v0.5.1
+	golang.org/x/oauth2 v0.34.0
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -22,7 +23,6 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
 	github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

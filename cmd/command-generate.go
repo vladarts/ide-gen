@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/xxxbobrxxx/ide-gen/pkg/config"
@@ -85,9 +86,11 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 	}
 
 	//: Clone repos
+	var cloneErrors []error
 	if command.Parallel {
 		sem := make(chan struct{}, command.ParallelConcurrency)
 		var wg sync.WaitGroup
+		var mu sync.Mutex
 
 		for _, projectEntry := range projectEntries {
 			wg.Add(1)
@@ -96,9 +99,11 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 				defer wg.Done()
 				defer func() { <-sem }()
 
-				err := command.ProcessProjectEntry(projectEntry)
-				if err != nil {
+				if err := command.ProcessProjectEntry(projectEntry); err != nil {
 					logger.WithError(err).Errorf("error cloning the repo: %v", projectEntry.Name)
+					mu.Lock()
+					cloneErrors = append(cloneErrors, err)
+					mu.Unlock()
 				}
 			}(projectEntry)
 		}
@@ -107,13 +112,18 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 		for _, projectEntry := range projectEntries {
 			if err := command.ProcessProjectEntry(projectEntry); err != nil {
 				logger.WithError(err).Errorf("error cloning the repo: %v", projectEntry.Name)
+				cloneErrors = append(cloneErrors, err)
 			}
 		}
 	}
 
+	if len(cloneErrors) > 0 {
+		return errors.Join(cloneErrors...)
+	}
+
 	//: Idea project
 	if command.Project.Root != "" {
-		project := command.Project
+		project := &idea.Project{Root: command.Project.Root}
 		for _, projectEntry := range projectEntries {
 			project.AddEntry(projectEntry)
 		}

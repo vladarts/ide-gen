@@ -27,23 +27,20 @@ type GitSourcesRootCommander struct {
 	Config GitSourcesRootConfig
 }
 
-func (r *GitSourcesRootCommander) Clone(path string) error {
-	err := os.MkdirAll(path, os.ModePerm)
-	if err != nil {
-		return err
-	}
-
-	_, err = ExecCmd("git", []string{
-		"clone", r.Config.Url, path,
+func (r *GitSourcesRootCommander) Clone(targetPath string) error {
+	_, err := ExecCmd("git", []string{
+		"clone", r.Config.Url, targetPath,
 	}, nil)
 	if err != nil {
+		// Remove a partially-created directory so the next run retries cleanly.
+		_ = os.Remove(targetPath)
 		return err
 	}
 
 	if r.Config.FastForward != nil && *r.Config.FastForward {
 		_, err := ExecCmd("git", []string{
 			"config", "pull.ff", "only",
-		}, &path)
+		}, &targetPath)
 		if err != nil {
 			return err
 		}
@@ -68,11 +65,11 @@ func (r *GitSourcesRootCommander) Exists(p string) (bool, error) {
 		"remote", "get-url", "origin",
 	}, &p)
 	if err != nil {
-		return true, err
+		return false, fmt.Errorf("failed to get origin for %s: %w", p, err)
 	}
 
 	if curOrigin != r.Config.Url {
-		return true, fmt.Errorf(
+		return false, fmt.Errorf(
 			"current origin %s does not match with config value %s",
 			curOrigin, r.Config.Url)
 	}
@@ -117,7 +114,7 @@ func (c *GitSourcesRootConfig) Name() (string, error) {
 		escapedPath = escapedPath[:len(escapedPath)-4]
 	}
 
-	elements := strings.Split(escapedPath, "/")
+	elements := strings.FieldsFunc(escapedPath, func(r rune) bool { return r == '/' })
 
 	return strings.Join(elements, "."), nil
 }
