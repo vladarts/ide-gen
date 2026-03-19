@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/xxxbobrxxx/ide-gen/pkg/config"
@@ -117,8 +116,8 @@ func (command *GenerateCommand) Execute(_ *cobra.Command, _ []string) (err error
 		}
 	}
 
-	if len(cloneErrors) > 0 {
-		return errors.Join(cloneErrors...)
+	for _, cloneErr := range cloneErrors {
+		logger.WithError(cloneErr).Error("clone failed")
 	}
 
 	//: Idea project
