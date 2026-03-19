@@ -1,13 +1,14 @@
 package main
 
 import (
+	"runtime"
+	"sync"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/xxxbobrxxx/ide-gen/pkg/config"
 	"github.com/xxxbobrxxx/ide-gen/pkg/idea"
 	"github.com/xxxbobrxxx/ide-gen/pkg/repository"
-	"runtime"
-	"sync"
 )
 
 type GenerateCommand struct {
@@ -51,8 +52,8 @@ func (command *GenerateCommand) Register() *cobra.Command {
 func (command *GenerateCommand) AddFlags(flags *pflag.FlagSet) {
 	flags.BoolVarP(&command.Parallel, "parallel", "p",
 		false, "Use parallel download")
-	flags.IntVar(&command.ParallelConcurrency, "parallel-concurrency", runtime.NumCPU()*2,
-		"Parallel download concurrency, default is runtime.NumCPU() * 2")
+	flags.IntVar(&command.ParallelConcurrency, "parallel-concurrency", runtime.NumCPU(),
+		"Parallel download concurrency, default is runtime.NumCPU()")
 }
 
 func (command *GenerateCommand) ProcessProjectEntry(projectEntry repository.ProjectEntry) (err error) {
